@@ -1,0 +1,174 @@
+{% extends "admin/base.html" %}
+
+{% block page-title %}Crypto Currency{% endblock %}
+
+{% block menu %}
+    <li><a href="/dashboard" class=""><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
+    <li><a href="/dashboard/list" class=""><i class="lnr lnr-linearicons"></i> <span>Crypto Currencies</span></a></li>
+    <li><a href="/logout" class=""><i class="lnr lnr-exit"></i> <span>Logout</span></a></li>
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <!-- TABLE STRIPED -->
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">Details : </h3>
+            </div>
+            <div class="panel-body">
+
+                <table class="table table-striped">
+                    <tbody>
+                    <tr>
+                        <th>Name of Coin</th>
+                        <td>{{ cc.currencyName }}</td>
+                    </tr>
+                    <tr>
+                        <th>Owner :</th>
+                        <td>{{ cc.owner }}</td>
+                    </tr>
+                    <tr>
+                        <th>pszTimeStamp :</th>
+                        <td>{{ cc.pszTimestamp }}</td>
+                    </tr>
+                    <tr>
+                        <th>Max Money :</th>
+                        <td>{{ cc.maxMoney }}</td>
+
+                    </tr>
+                    <tr>
+                        <th>nSubsidyHalving :</th>
+                        <td>{{ cc.halvingInterval }}</td>
+                    </tr>
+                    <tr>
+                        <th>Port :</th>
+                        <td>{{ cc.nDefaultPort }}</td>
+                    </tr>
+                    <tr>
+                        <th>nTime :</th>
+                        <td>{{ cc.nTime }}</td>
+                    </tr>
+                    <tr>
+                        <th>nBits :</th>
+                        <td>{{ cc.nBits }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>nSubsidy :</th>
+                        <td>{{ cc.nSubsidy }}</td>
+                    </tr>
+                    <tr>
+                        <th>Github Repository URL :</th>
+                        <td><a href="https://github.com/{{ cc.githubUser }}/core">https://github.com/{{ cc.githubUser }}</a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Apache Download Password :</th>
+                        <td>{{ cc.downloadPassword }}</td>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Full Nodes :</th>
+                        <td>
+
+                            {% for fn in fnList %}
+                                {{ fn.address }}
+                            {% endfor %}
+
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+
+                <br>
+                <h3>platforms</h3>
+
+
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>name</th>
+                        <th>Repo-push status</th>
+                        <th>Build-status</th>
+                        <th>Operations</th>
+
+
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for platform in platforms %}
+
+                        <tr>
+                            <td>{{ platform.name }}({ platform.aliasName })</td>
+
+                            <td>
+                                {% if platform.repoStatus == 2 %}
+                                    <span class="label label-success"><a
+                                            href="{{ platform.githubUrl }}">Ready</a></span>
+                                {% elif platform.repoStatus == 3 %}
+                                    <span class="label label-danger">Failed!</span>
+                                {% elif platform.repoStatus == 1 %}
+                                    <span class="label label-info">Proccessing ... <i class="fa fa-spinner fa-spin"></i></span>
+                                {% else %}
+                                    --
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+                                {% if platform.buildStatus == 2 %}
+                                    <span class="label label-success"><a
+                                            href="{{ platform.downloadUrl }}">Ready</a></span>
+                                {% elif platform.buildStatus == 3 %}
+                                    <span class="label label-danger">Failed!</span>
+                                {% elif platform.buildStatus == 1 %}
+                                    <span class="label label-info">Proccessing ... <i class="fa fa-spinner fa-spin"></i></span>
+                                {% else %}
+                                    --
+                                {% endif %}
+
+
+                            </td>
+
+                            <td>
+                                {% if platform.buildStatus == 1 or platform.buildStatus == 2 or not platform.haveBuild or platform.repoStatus != 2 %}
+                                    <button class="btn btn-success" disabled="disabled">Build</button>
+                                {% else %}
+                                    <button class="btn btn-success" onclick="window.location='{% url 'platform_build' currency_id=cc.id platform_id=platform.id %}'">Build</button>
+                                {% endif %}
+
+                                |
+
+                                {% if platform.repoStatus != 3  %}
+                                    <button class="btn btn-success" disabled="disabled">Push</button>
+                                {% else %}
+                                    <button class="btn btn-success" onclick="window.location='{% url 'platform_build' currency_id=cc.id platform_id=platform.id %}'">Push</button>
+                                {% endif %}
+                            </td>
+
+
+                        </tr>
+
+                    {% endfor %}
+
+
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+        <!-- END TABLE STRIPED -->
+
+
+    </div>
+
+
+{% endblock %}
+

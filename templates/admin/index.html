@@ -1,0 +1,38 @@
+{% extends "admin/base.html" %}
+
+{% block page-title %}Dashboard{% endblock %}
+
+{% block menu %}
+    <li><a href="/dashboard" class="active"><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
+    <li><a href="/dashboard/list" class=""><i class="lnr lnr-linearicons"></i> <span>Crypto Currencies</span></a></li>
+    <li><a href="/logout" class=""><i class="lnr lnr-exit"></i> <span>Logout</span></a></li>
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+
+        <div class="col-md-2">
+            <!-- PANEL NO CONTROLS -->
+            <div class="panel" align="center">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Servers Status :</h3>
+                </div>
+                <div class="panel-body">
+                    genesis server :
+                    {% if genesis %}
+                        <span class="label label-success">On</span>
+                     {% else %}
+                        <span class="label label-danger">Off</span>
+                    {% endif %}
+
+                </div>
+            </div>
+            <!-- END PANEL NO CONTROLS -->
+        </div>
+
+    </div>
+
+
+{% endblock %}
+

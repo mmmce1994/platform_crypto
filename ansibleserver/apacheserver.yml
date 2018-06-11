@@ -1,0 +1,62 @@
+- hosts: testserver
+  become: true
+  become_method: sudo
+  become_user: root
+  tasks:
+   - name: aptlist
+     shell: "dpkg -l"
+     register: aptlist
+
+   - name: apache installer
+     apt:
+      name: "{{ item }}"
+      state: latest
+     with_items:
+      - apache2
+      - apache2-utils
+      - zip
+     when: "'apache2' not in aptlist.stdout"
+
+   - name: passlib installer
+     pip:
+      name: passlib
+      state: latest
+     when: "'apache2' not in aptlist.stdout"
+
+   - name: apache2 config editor
+     blockinfile:
+      dest: /etc/apache2/sites-enabled/000-default.conf
+      state: present
+      marker: "#<start>"
+      block: |
+        <Directory "/var/www/html">
+          AuthType Basic
+          AuthName "Restricted Content"
+          AuthUserFile /etc/apache2/.htpasswd
+          Order Deny,Allow
+          Deny from all
+        </Directory>
+     notify:
+        - restart apache
+     register: configeditor
+     when: "'apache2' not in aptlist.stdout"
+
+   - name: password creator
+     htpasswd:
+      name: "{{ username }}"
+      path: "/etc/apache2/.htpasswd"
+      password: "{{ password }}"
+      state: present
+
+   - name: create directory
+     file:
+      path: "/var/www/html/{{ username }}"
+      state: directory
+      mode: 0777
+     register: apachedirectory
+
+  handlers:
+
+    - name: restart apache
+      service: name=apache2 state=restarted
+      when: configeditor

@@ -1,0 +1,3 @@
+testserver ansible_host=192.168.1.7 ansible_user=mhghasemi ansible_ssh_pass=*&@136raz ansible_become_pass=*&@136raz
+androidserver ansible_host=192.69.204.37 ansible_user=dockuser ansible_ssh_pass=*&@136raz ansible_become_pass=*&@136raz
+localhost ansile_connection=local

@@ -1,0 +1,40 @@
+- hosts: testserver
+  become: true
+  become_method: sudo
+  become_user: root
+  tasks:
+   - name: install pkg
+     apt:
+      name: "{{ item }}"
+      state: present
+     with_items:
+       - linux-image-extra-{{ ansible_kernel }}
+       - linux-image-extra-virtual
+       - apt-transport-https
+       - ca-certificates
+       - curl
+       - git
+       - software-properties-common
+       - python
+       - python-apt
+       - python-pip
+       - python-pycurl
+   - name: add docker gpg
+     shell: "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -"
+   - name: add docker rep
+     apt_repository:
+      repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
+      mode: '644'
+      state: present
+      update_cache: yes
+   - name: upgrade rep 
+     apt: 
+      upgrade: dist
+   - name: install docker
+     apt:
+      name: docker-ce
+      state: latest
+   - name: install docker-py
+     pip:
+      name: docker-py
+      state: latest

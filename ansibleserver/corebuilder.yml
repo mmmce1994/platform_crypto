@@ -1,0 +1,61 @@
+- hosts: testserver
+  become: true
+  become_method: sudo
+  become_user: root
+  tasks:
+   - name:
+     shell: "dpkg -l"
+     register: aptlist
+
+   - name: pip installer
+     apt:
+      name: python-pip
+      state: latest
+     when: "'python-pip' not in aptlist.stdout"
+     ignore_errors: yes
+
+   - name: pip list
+     shell: "pip list"
+     register: piplist
+
+   - name: docker-py installer
+     pip:
+      name: docker-py
+      state: latest
+     when: "'docker-py' not in piplist.stdout"
+     ignore_errors: yes
+
+   - name: listdir1
+     shell: "ls -a {{ ansible_env.PWD }}"
+     register: dirlist1
+     ignore_errors: yes
+
+  # - name: shared directory creator
+   #  file:
+    #  path: "{{ ansible_env.PWD }}/shared"
+     # state: directory
+      #owner: "{{ ansible_env.SUDO_USER }}"
+      #group: "{{ ansible_env.SUDO_USER }}"
+      #mode: 0777
+     #when: "'shared' not in dirlist1.stdout"
+
+   #- name: listdir
+     #shell: "ls -a {{ ansible_env.PWD }}/shared"
+     #register: dirlist
+     #ignore_errors: yes
+
+   #- name: request directory creator
+    # file:
+     # path: "{{ ansible_env.PWD }}/shared/{{ filename }}"
+      #state: directory
+      #owner: "{{ ansible_env.SUDO_USER }}"
+      #group: "{{ ansible_env.SUDO_USER }}"
+      #mode: 0777
+     #when: "'{{ filename }}' not in dirlist.stdout"
+   - name: docker runner
+     shell: "docker run -e GIT_URL={{ github_link }} -e PLATFORM={{ platform|lower }} -e ID={{ filename }} -v {{ ansible_env.PWD }}/shared/{{ filename }}/{{ platform }}:/share -i core-builder:0.6"
+   #- name: docker runner
+    # shell: "docker run -e GIT_URL={{ github_link }} --name {{ filename }} -v {{ ansible_env.PWD }}/shared/{{ filename }}:/share -i core-builder:0.5"
+
+   - name: list
+     shell: "docker ps"

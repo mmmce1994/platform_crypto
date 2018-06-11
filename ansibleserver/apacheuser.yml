@@ -1,0 +1,42 @@
+- hosts: testserver
+  become: true
+  become_method: sudo
+  become_user: root
+  tasks:
+   - name: wwwdir list
+     shell: "ls -a /var/www/html"
+     register: wwwdirlist
+
+   - name: user apache directory creator
+     file:
+      path: "/var/www/html/{{ username }}/{{ filename }}"
+      state: directory
+      mode: 0777
+     when: "'{{ filename }}' not in wwwdirlist.stdout"
+
+   - name:
+     shell: "zip -r /var/www/html/{{ username }}/{{ filename }}/{{ platform }}.zip {{ ansible_env.PWD }}/shared/{{ filename }}/{{ platform }}"
+
+   - name: apache2 config editor 2
+     blockinfile:
+      dest: /etc/apache2/sites-enabled/000-default.conf
+      state: present
+      insertafter: "</Directory>"
+      marker: "#<{{ username }}>"
+      block: |
+        <Directory "/var/www/html/{{ username }}">
+          AuthType Basic
+          AuthName "Restricted Content"
+          AuthUserFile /etc/apache2/.htpasswd
+          Require user {{ username }}
+          Order Deny,Allow
+          Allow from {{ username }}
+        </Directory>
+     notify:
+        - restart apache
+     register: configeditor
+
+  handlers:
+    - name: restart apache
+      service: name=apache2 state=restarted
+      when: configeditor

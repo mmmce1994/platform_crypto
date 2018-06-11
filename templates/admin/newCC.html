@@ -1,0 +1,338 @@
+{% extends "admin/base.html" %}
+
+{% block page-title %}new Crypto Currency{% endblock %}
+
+{% block menu %}
+    <li><a href="/dashboard" class=""><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
+    <li><a href="/dashboard/list" class=""><i class="lnr lnr-linearicons"></i> <span>Crypto Currencies</span></a></li>
+    <li><a href="/logout" class=""><i class="lnr lnr-exit"></i> <span>Logout</span></a></li>
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+
+        <!-- INPUTS -->
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">Fill and Submit this form !</h3>
+            </div>
+            <div class="panel-body">
+
+
+                <div class="container" align="center">
+
+                    {% if errors %}
+                        <div class="alert alert-danger alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <i class="fa fa-times-circle"></i>
+                            {% for error in errors %}
+
+                                {{ error }} <br>
+
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+
+                    <form action="" method="post" id="CCGGForm">{% csrf_token %}
+
+                        <h5 align="left">Currency details</h5>
+                        <hr/>
+
+
+                        <div class="row">
+
+                            <div class="col-lg-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Currency Name</span>
+                                    <input id="msg" type="text" class="form-control" name="currencyName" placeholder="">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Currency Unit</span>
+                                    <input id="msg" type="text" class="form-control" name="currencyUnit" placeholder="">
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Max Money</span>
+                                    <input id="msg" type="text" class="form-control" name="maxMoney" placeholder="">
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <br>
+
+                        <div class="row">
+
+                            <div class="col-lg-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">nSubsidy</span>
+                                    <input id="msg" type="text" class="form-control" name="nSubsidy"
+                                           placeholder="">
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Halving Interval</span>
+                                    <input id="msg" type="text" class="form-control" name="halvingInterval"
+                                           placeholder="">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">nDefaultPort</span>
+                                    <input id="msg" type="text" class="form-control" name="nDefaultPort" placeholder="">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <br>
+
+                        <h5 align="left">GenesisBLock details</h5>
+                        <hr/>
+
+                        <div class="row">
+
+                            <div class="col-lg-12">
+
+                                <div class="input-group">
+                                    <span class="input-group-addon">pszTimeStamp</span>
+                                    <input id="msg" type="text" class="form-control" name="pszTimestamp" placeholder="">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <br>
+
+                        <div class="row">
+                            <div class="col-lg-12">
+
+                                <div class="input-group">
+                                    <span class="input-group-addon">pubKey</span>
+                                    <input id="msg" type="text" class="form-control" name="pubKey" placeholder="">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <br>
+
+                        <div class="row">
+
+
+                            <div class="col-lg-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Coinbase</span>
+                                    <input id="msg" type="text" class="form-control" name="coinBase" placeholder="">
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">nTime</span>
+                                    <input id="msg" type="text" class="form-control" name="nTime" placeholder="">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">nBits</span>
+                                    <input id="msg" type="text" class="form-control" name="nBits" placeholder="">
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <br>
+
+                        <h5 align="left">Github Account : </h5>
+                        <hr>
+
+                        <div class="row">
+
+                            <div class="col-lg-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Github User</span>
+                                    <input id="msg" type="text" class="form-control" name="githubUser"
+                                           placeholder="">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Github Password</span>
+                                    <input type="password" id="pwd" class="form-control" name="githubPass">
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+
+
+
+                        <br>
+
+                        <h5 align="left">Network nodes : </h5>
+                        <hr>
+
+
+                        <table class="table table-hover" id="full_node_table">
+                            <thead>
+                            <tr>
+                                <th>Full Nodes</th>
+                            </tr>
+
+                            </thead>
+                            <tbody>
+
+                            <tr>
+
+                                <td><input id="ip" type="text" class="form-control" name="field_ip" placeholder="IPV6">
+                                </td>
+                                <td>
+
+                                    <button type="button" class="btn btn-success btn-add" id="add_fullnode"
+                                            onclick="add_full_node();">
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+
+                                </td>
+
+
+                            </tr>
+
+                            </tbody>
+
+
+                        </table>
+
+
+                        <table class="table table-hover" id="dns_seed_table">
+                            <thead>
+                            <tr>
+                                <th>Dns Seeds</th>
+                                <th></th>
+                                <th></th>
+
+                            </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                            <tr>
+
+                                <td class="col-lg-2"><input id="sub" type="text" class="form-control" name="field_sub"
+                                                            placeholder="sub"></td>
+
+                                <td><input id="domain" type="text" class="form-control" name="field_domain"
+                                           placeholder="domain.com"></td>
+
+                                <td>
+                                    <button type="button" class="btn btn-success btn-add" id="add_fullnode"
+                                            onclick="add_dns_seed();">
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </td>
+
+
+                            </tr>
+
+                            </tbody>
+
+
+                        </table>
+
+                        <button id="submit" type="submit" class="btn btn-info">Submit and eat bonab!</button>
+
+
+                    </form>
+
+                </div>
+
+
+            </div>
+        </div>
+        <!-- END INPUTS -->
+
+
+    </div>
+
+    <script>
+        function add_full_node() {
+
+            if (document.getElementById("ip").value) {
+                var table = document.getElementById("full_node_table");
+                var ip = document.getElementById("ip");
+                var form = document.getElementById("CCGGForm");
+                var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr").length;
+                var row = table.insertRow(2);
+                var cell1 = row.insertCell(0);
+                cell1.innerHTML = ip.value;
+
+                var div = document.createElement('div');
+                div.className = 'row';
+                div.innerHTML = "<input id='ip' type='hidden'  name='address" + rows + "'" + " value='" + ip.value + "'>";
+                form.appendChild(div);
+
+                ip.value = "";
+
+
+            }
+
+        }
+
+        function add_dns_seed() {
+            if (document.getElementById("sub") && document.getElementById("domain")) {
+                var table = document.getElementById("dns_seed_table")
+                var sub = document.getElementById("sub")
+                var domain = document.getElementById("domain")
+                var form = document.getElementById("CCGGForm");
+                var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr").length;
+                var row = table.insertRow(2);
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                cell1.innerHTML = sub.value
+                cell2.innerHTML = domain.value
+
+                var div1 = document.createElement('div');
+                var div2 = document.createElement('div');
+
+                div1.className = 'row';
+                div2.className = 'row';
+
+                div1.innerHTML = "<input id='sub' type='hidden'  name='subDomain" + rows + "'" + " value='" + sub.value + "'>";
+                form.appendChild(div1);
+                div2.innerHTML = "<input id='domain' type='hidden'  name='domain" + rows + "'" + " value='" + domain.value + "'>";
+                form.appendChild(div2);
+
+                sub.value = "";
+                domain.value = "";
+            }
+
+        }
+
+    </script>
+
+
+{% endblock %}
+

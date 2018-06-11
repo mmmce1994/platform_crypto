@@ -1,0 +1,38 @@
+- hosts: androidserver
+  become: true
+  become_method: sudo
+  become_user: root
+  tasks:
+
+   - name: listdir
+     shell: "ls -a {{ ansible_env.PWD }}"
+     register: dirlist
+     ignore_errors: yes
+
+   - name: request directory creator
+     file:
+      path: "{{ ansible_env.PWD }}/shared"
+      state: directory
+      owner: "{{ ansible_env.SUDO_USER }}"
+      group: "{{ ansible_env.SUDO_USER }}"
+      mode: 0755
+     when: "'shared' not in dirlist.stdout"
+     ignore_errors: yes
+
+   - name: listdir2
+     shell: "ls -a {{ ansible_env.PWD }}/shared"
+     register: dirlist2
+     ignore_errors: yes
+
+   - name: request directory creator2
+     file:
+      path: "{{ ansible_env.PWD }}/shared/{{ filename }}"
+      state: directory
+      owner: "{{ ansible_env.SUDO_USER }}"
+      group: "{{ ansible_env.SUDO_USER }}"
+      mode: 0755
+     when: "'{{ filename }}' not in dirlist2.stdout"
+     ignore_errors: yes
+  
+   - name: docker runner
+     shell: "docker run -e GIT_URL={{ github_link }} -e ID={{ filename }} -v {{ ansible_env.PWD }}/shared/{{ filename }}/android:/share -i android-builder:0.3"

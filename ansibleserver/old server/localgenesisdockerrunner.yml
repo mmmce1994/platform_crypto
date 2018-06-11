@@ -1,0 +1,39 @@
+- hosts: testserver
+  become: true
+  become_method: sudo
+  become_user: root
+  tasks:
+
+   - name: creat directory
+     file:
+      path: "{{ ansible_env.PWD }}/json"
+      state: directory
+
+   - name: directory change permission
+     file:
+      path: "{{ ansible_env.PWD }}/json"
+      owner: "{{ ansible_env.SUDO_USER }}"
+      group: "{{ ansible_env.SUDO_USER }}"
+      mode: 0777
+
+   - name: copy files
+     copy:
+      src: "{{ source_json_directory }}"
+      dest: "{{ ansible_env.PWD }}/json/{{ filename }}.json"
+     register: jsontransfer
+
+   - name: json change permission
+     file:
+      path:  "{{ ansible_env.PWD }}/json/{{ filename }}.json"
+      owner: "{{ ansible_env.SUDO_USER }}"
+      group: "{{ ansible_env.SUDO_USER }}"
+      mode: 0777
+
+   - name: run nvidia-docker
+     command: "nvidia-docker run -v {{ ansible_env.PWD }}/json/{{ filename }}.json:/data/request.json genesisminer-docker:0.2 '--infile' /data/request.json"
+     when: jsontransfer|changed
+
+   - name: delete json dir
+     file:
+      path: "{{ ansible_env.PWD }}/json"
+      state: absent
